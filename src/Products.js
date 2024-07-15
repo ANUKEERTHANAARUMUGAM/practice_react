@@ -3,13 +3,14 @@ import { Modal } from "bootstrap";
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 
-
 const Products = () => {
-  
+  /* -----------------------creating axios instance----------------------- */
+  const axiosInstance = axios.create({
+    baseURL: "http://localhost:7000/products",
+  });
   /* -----------------Lodash Package ----------------------------------- */
   const _ = require("lodash");
   //var object = require('lodash/fp/object');
-
 
   /* --------------------useStates---------------------------------------- */
   const [details, setDetails] = useState([]);
@@ -17,10 +18,10 @@ const Products = () => {
   const [show, setShow] = useState(false);
   const [update, setUpdate] = useState(false);
   const [newProduct, setNewProduct] = useState({
-    id: null,
+    id: 0,
     name: "",
     description: "",
-    price: null,
+    price: 0,
     gender: "",
     type: "",
     img: "",
@@ -28,14 +29,29 @@ const Products = () => {
     category: "",
   });
 
+
+  /* clearing new product state */
+  const clearNewProduct=()=>{
+    setNewProduct({
+      id: 0,
+      name: "",
+      description: "",
+      price: 0,
+      gender: "",
+      type: "",
+      img: "",
+      inCart: false,
+      category: "",
+    });
+  };
   /* -----------------functions setting modal state--------------------- */
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   /* -----------------useEffect for getting details to diplay --------------------------------*/
   useEffect(() => {
-    axios
-      .get("http://localhost:7000/products")
+    axiosInstance
+      .get("/")
       .then((res) => {
         setDetails(res.data);
         //console.log(details);
@@ -56,7 +72,7 @@ const Products = () => {
   /* -------------------------------del----------------------------------------------------- */
   const handleDel = (id) => {
     console.log(id);
-    axios.delete(`http://localhost:7000/products/${id}`).then((res) => {
+    axiosInstance.delete(`/${id}`).then((res) => {
       console.log(res.data);
       setDetails(details.filter((detail) => !_.isEqual(detail, res.data)));
       console.log(details);
@@ -66,8 +82,8 @@ const Products = () => {
   const handleUpdateButtonClick = async (id) => {
     console.log(id);
     setUpdate(true);
-    await axios
-      .get(`http://localhost:7000/products/${id}`)
+    await axiosInstance
+      .get(`/${id}`)
       .then((res) => {
         console.log(res.data);
         setNewProduct(res.data);
@@ -82,19 +98,9 @@ const Products = () => {
     //console.log(5);
     console.log(id);
     console.log(newProduct);
-    const {
-      
-      name,
-      description,
-      price,
-      gender,
-      type,
-      img,
-      inCart,
-      category,
-    } = newProduct;
+    const { name, description, price, gender, type, img, inCart, category } =
+      newProduct;
     const priceInt = parseInt(price, 10);
-    const inCartBool = inCart === "true";
     if (
       id === "" ||
       name === "" ||
@@ -103,7 +109,6 @@ const Products = () => {
       gender === "" ||
       type === "" ||
       img === "" ||
-      typeof inCartBool !== "boolean" ||
       category === ""
     ) {
       console.log(2);
@@ -111,24 +116,19 @@ const Products = () => {
     } else {
       console.log(3);
 
-      axios
-        .put(`http://localhost:7000/products/${id}`, {
-          id,
-          name,
-          description,
-          price,
-          gender,
-          type,
-          img,
-          inCart,
-          category,
-        })
+      axiosInstance
+        .put(`/${id}`, newProduct)
         .then((res) => {
           console.log(res.data);
-          
-          setDetails(details.map(detail=>detail.id==res.data.id?res.data:detail));
+
+          setDetails(
+            details.map((detail) =>
+              detail.id == res.data.id ? res.data : detail
+            )
+          );
           console.log(4444444444);
           handleClose();
+          clearNewProduct();
         })
         .catch((err) => {
           console.log(err);
@@ -136,10 +136,11 @@ const Products = () => {
         .finally(() => {
           console.log("adding action done");
           setUpdate(false);
+
         });
     }
   };
-  /*  axios
+  /*  axiosInstance
       .put(`http://localhost:7000/products/${id}`, newProduct)
       .then((res) => {
         console.log(res.data);
@@ -195,26 +196,17 @@ const Products = () => {
       return;
     } else {
       console.log(3);
-      axios
-        .post("http://localhost:7000/products", {
-          id,
-          name,
-          description,
-          price: priceInt,
-          gender,
-          type,
-          img,
-          inCart: inCartBool,
-          category,
-        })
+      axiosInstance
+        .post("http://localhost:7000/products", newProduct)
         .then((res) => {
           setDetails([...details, res.data]);
+         clearNewProduct();
+
           handleClose();
         })
         .catch((err) => {
           console.log("cannot add the data");
-        })
-        .catch((e) => setErr(e));
+        });
     }
     console.log(4);
     console.log(details);
@@ -226,12 +218,12 @@ const Products = () => {
     console.log(id, value);
     setNewProduct({
       ...newProduct,
-      [id]: value,
+      [id]:id=="inCart"?Boolean(value):value,
     });
     console.log(newProduct);
   };
 
-/*  {
+  /*  {
       "id": "18",
       "name": "Black Shirt Men",
       "description": "Black Shirt for Men",
@@ -242,9 +234,6 @@ const Products = () => {
       "inCart": false,
       "category": "clothes"
     } */
-
-
-
 
   /* -----------------------------------component------------------------------------ */
   return (

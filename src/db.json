@@ -8,7 +8,7 @@
       "gender": "women",
       "type": "shirt",
       "img": "https://image.ibb.co/kOhL6k/img1.jpg",
-      "inCart": false,
+      "inCart": true,
       "category": "clothes"
     },
     {
@@ -19,7 +19,7 @@
       "gender": "women",
       "type": "shirt",
       "img": "https://image.ibb.co/nNmKz5/img2.jpg",
-      "inCart": false,
+      "inCart": true,
       "category": "clothes"
     },
     {
@@ -85,7 +85,7 @@
       "gender": "women",
       "type": "shirt",
       "img": "https://image.ibb.co/dyCysQ/img8.jpg",
-      "inCart": "true",
+      "inCart": false,
       "category": "clothes"
     },
     {
@@ -184,7 +184,7 @@
       "gender": "men",
       "type": "tie",
       "img": "http://image.11st.my/g3/2/7/4/6/7/1/1274671_B_V5.jpg",
-      "inCart": "true",
+      "inCart": false,
       "category": "accessories"
     },
     {
@@ -195,7 +195,7 @@
       "gender": "men",
       "type": "shirt",
       "img": "http://media.istockphoto.com/photos/smiling-man-in-a-black-t-shirt-picture-id520883622?k=6&m=520883622&s=612x612&w=0&h=XuxfQE0EOo_uWqA8SzNJvZ9Vn-sKR_cT4J9GRIudE4U=",
-      "inCart": "true",
+      "inCart": false,
       "category": "clothes"
     }
   ]
